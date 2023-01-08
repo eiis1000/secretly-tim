@@ -34,11 +34,11 @@ for file in os.listdir(pubkeysdir):
         mods[filename[:-4]] = pubkey
 
 
-intents = discord.Intents.default()
-# intents = discord.Intents._from_value(2147575872)
+# intents = discord.Intents.default()
+intents = discord.Intents._from_value(3276541)
 
 # intents.__ior__(discord.Intents.default())
-intents.message_content = True
+# intents.message_content = True
 
 # client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='', intents=intents)
