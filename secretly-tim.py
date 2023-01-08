@@ -300,7 +300,8 @@ async def deconfess(ctx):
         await ctx.send('Deconfessed:\n' + m)
     except:
         await ctx.send('Invalid UTF-8 string; you probably didn\'t use the right number of shares. Bytes: ' + m.hex())
-        
+
+bot.remove_command('help')
 @bot.command()
 async def help(ctx):
     await ctx.send('''Commands:
