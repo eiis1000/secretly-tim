@@ -142,8 +142,8 @@ async def personalconfess(ctx):
     
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]}')
-    await logconfess(cnum, ctx.author, parts[0])
     reply = await ctx.send(f'Confession sent. This message will self-destruct in 5 minutes.')
+    await logconfess(cnum, ctx.author, parts[0])
     await asyncio.sleep(300)
     await reply.delete()
 
@@ -168,8 +168,8 @@ async def keyconfess(ctx):
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
-    await logconfess(cnum, ctx.author, parts[0])
     reply = await ctx.send(f'Here is your private key:\n{prikey}\n**Make sure to save it somewhere safe and keep it secret!** Your confession has been sent, and this message will self-destruct in 5 minutes. If you do not save your private key, you will not be able to decrypt replies.')
+    await logconfess(cnum, ctx.author, parts[0])
     await asyncio.sleep(300)
     await reply.delete()
 
@@ -195,8 +195,8 @@ async def encryptconfess(ctx):
         enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** replying to **{shorthash(pubkey)}**: {enc}')
-        await logconfess(cnum, ctx.author, parts[0])
         reply = await ctx.send(f'Confession sent for {shorthash(pubkey)}. This message will self-destruct in 5 minutes.')
+        await logconfess(cnum, ctx.author, parts[0])
         await asyncio.sleep(300)
         await reply.delete()
     except:
@@ -224,8 +224,8 @@ async def identifyconfess(ctx):
         enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}**: {enc}')
-        await logconfess(cnum, ctx.author, parts[0])
         reply = await ctx.send(f'Identification sent for {shorthash(pubkey)}. This message will self-destruct in 5 minutes.')
+        await logconfess(cnum, ctx.author, parts[0])
         await asyncio.sleep(300)
         await reply.delete()
     except:
@@ -279,8 +279,8 @@ async def verifyconfess(ctx):
         pubkey = hexit(key.n)
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** verified as **{shorthash(pubkey)}**: {parts[2]}')
-        await logconfess(cnum, ctx.author, parts[0])
         reply = await ctx.send(f'Verification as {shorthash(pubkey)} succeeded. This message will self-destruct in 5 minutes.')
+        await logconfess(cnum, ctx.author, parts[0])
         await asyncio.sleep(300)
         await reply.delete()
     except:
@@ -305,11 +305,11 @@ bot.remove_command('help')
 @bot.command()
 async def help(ctx):
     await ctx.send('''Commands:
-    `keyconfess CONFESSION_GOES_HERE` - Confess with a public key
-    `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE` - Reply to a confession with an encrypted message
-    `identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
-    `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE` - Decrypt an encrypted confession
-    `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
+`keyconfess CONFESSION_GOES_HERE` - Confess with a public key
+`encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE` - Reply to a confession with an encrypted message
+`identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
+`decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE` - Decrypt an encrypted confession
+`verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
     ''')
 
 @bot.event
