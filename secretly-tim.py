@@ -304,9 +304,9 @@ async def deconfess(ctx):
 bot.remove_command('help')
 @bot.command()
 async def help(ctx):
-    await ctx.send('''Commands:
+    await ctx.send('''Commands (all commands are DM only):
 `keyconfess CONFESSION_GOES_HERE` - Confess with a public key
-`encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE` - Reply to a confession with an encrypted message
+`encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE` - Reply to a confession with an encrypted message
 `identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
 `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE` - Decrypt an encrypted confession
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
