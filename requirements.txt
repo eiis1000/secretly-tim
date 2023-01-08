@@ -3,3 +3,4 @@ pycryptodome
 binascii
 asyncio
 dotenv
+base64
