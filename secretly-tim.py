@@ -138,7 +138,7 @@ async def keyconfess(ctx):
     key = RSA.generate(1024)
     pubkey = hexit(key.n)
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
-    await personal_ads.send(f'**#{ginct(personal_ads.id)}**: {parts[1]} | keyhash = {shorthash(pubkey)}, key = {pubkey}')
+    await personal_ads.send(f'**#{ginct(personal_ads.id)}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
     reply = await ctx.send(f'Here is your private key:\n{prikey}\n**Make sure to save it somewhere safe and keep it secret!** Your confession has been sent, and this message will self-destruct in 5 minutes. If you do not save your private key, you will not be able to decrypt replies.')
     await asyncio.sleep(300)
     await reply.delete()
