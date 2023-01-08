@@ -12,12 +12,16 @@ from Crypto.Util import Padding
 import binascii
 import asyncio
 import base64
+import sys
 # from dotenv import load_dotenv
 
 # load_dotenv()
 # TOKEN = os.getenv('DISCORD_TOKEN')
 TOKEN = None
-with open('.env', 'r') as f:
+envfile = '.env'
+if len(sys.argv) > 1:
+    envfile = sys.argv[1]
+with open(envfile, 'r') as f:
     TOKEN = f.read().split('=')[1][1:-1]
 
 flags = {}
