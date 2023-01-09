@@ -76,12 +76,15 @@ def unhexit(x: str) -> int:
 
 def ginct(id: int):
     num = 0
+    cfile = f'confession_counter_{id}'
+    if len(sys.argv) > 1:
+        cfile = sys.argv[1] + cfile
     try:
-        with open(f'confession_counter_{id}', 'r') as f:
+        with open(cfile, 'r') as f:
             num = int(f.read())
     except:
         pass
-    with open(f'confession_counter_{id}', 'w+') as f:        
+    with open(cfile, 'w+') as f:        
         f.write(str(num + 1))
     return num + 1
 
