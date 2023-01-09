@@ -32,11 +32,11 @@ personal_ads = None
 mods = {}
 pubfolder = './pubkeys/'
 if len(sys.argv) > 1:
-    pubfolder = sys.argv[1] + '/pubkeys/'
+    pubfolder = sys.argv[1] + 'pubkeys/'
 pubkeysdir = os.fsencode(pubfolder)
 for file in os.listdir(pubkeysdir):
     filename = os.fsdecode(file)
-    with open(f'{pubfolder}{filename}', 'r') as f:
+    with open(pubfolder + filename, 'r') as f:
         pubkey = f.read()
         mods[filename[:-4]] = pubkey
 
