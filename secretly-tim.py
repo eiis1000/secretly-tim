@@ -101,7 +101,7 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
         cipher = PKCS1_OAEP.new(key)
         enc_data = cipher.encrypt(b';;'.join([secrets[i].encode('utf-8') for secrets in split_chunks]))
         mod = await bot.fetch_user(int(mod))
-        await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n{base64.b64encode(enc_data).decode("utf-8")}')
+        await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
         i += 1
 
 @bot.event
@@ -182,7 +182,7 @@ async def keyconfess(ctx):
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
-    reply = await ctx.send(f'Here is your private key:\n{prikey}\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in 1 day. If you do not save your private key, you will not be able to decrypt replies.')
+    reply = await ctx.send(f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in 1 day. If you do not save your private key, you will not be able to decrypt replies.')
     await logconfess(cnum, ctx.author, parts[0])
     await asyncio.sleep(60 * 60 * 24)
     await reply.delete()
