@@ -20,7 +20,7 @@ import sys
 TOKEN = None
 envfile = '.env'
 if len(sys.argv) > 1:
-    envfile = sys.argv[1]
+    envfile = sys.argv[1] + '.env'
 with open(envfile, 'r') as f:
     TOKEN = f.read().split('=')[1][1:-1]
 
@@ -30,10 +30,13 @@ prev_msg = None
 personal_ads = None
 
 mods = {}
-pubkeysdir = os.fsencode('./pubkeys/')
+pubfolder = './pubkeys/'
+if len(sys.argv) > 1:
+    pubfolder = sys.argv[1] + '/pubkeys/'
+pubkeysdir = os.fsencode(pubfolder)
 for file in os.listdir(pubkeysdir):
     filename = os.fsdecode(file)
-    with open(f'./pubkeys/{filename}', 'r') as f:
+    with open(f'{pubfolder}{filename}', 'r') as f:
         pubkey = f.read()
         mods[filename[:-4]] = pubkey
 
