@@ -143,10 +143,10 @@ async def testconfess(ctx):
 @bot.command()
 async def personalconfess(ctx):
     parts = ctx.message.content.split(' ', 1)
-    if not isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send('Please use this command in a DM.')
-        await ctx.message.delete()
-        return
+    # if not isinstance(ctx.channel, discord.DMChannel):
+    #     await ctx.send('Please use this command in a DM.')
+    #     await ctx.message.delete()
+    #     return
     
     if len(parts) < 2:
         reply = await ctx.send('You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
