@@ -126,6 +126,10 @@ async def on_message(message):
     if message.author.id == 452902745066831903: #erez
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
+        if message.content.lower() == 'kill yourself':
+            await message.channel.send('okay :(')
+            await bot.close()
+            print("committed suicide")
     await bot.process_commands(message)
 
 @bot.command()
