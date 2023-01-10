@@ -149,12 +149,12 @@ async def on_message(message):
 
 # @bot.command()
 # async def testconfess(ctx):
-#     parts = ctx.message.content.split(' ', 1)
+#     parts = ctx.message.content.split('\s+', 1)
 #     await ctx.send('I confess that I am a bot. You said: ' + parts[1])
     
 @bot.command()
 async def personalconfess(ctx):
-    parts = ctx.message.content.split(' ', 1)
+    parts = ctx.message.content.split('\s+', 1)
     # if not isinstance(ctx.channel, discord.DMChannel):
     #     await ctx.send('Please use this command in a DM.')
     #     await ctx.message.delete()
@@ -171,7 +171,7 @@ async def personalconfess(ctx):
 
 @bot.command()
 async def keyconfess(ctx):
-    parts = ctx.message.content.split(' ', 1)
+    parts = ctx.message.content.split('\s+', 1)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -189,7 +189,7 @@ async def keyconfess(ctx):
 
 @bot.command()
 async def encryptconfess(ctx):
-    parts = ctx.message.content.split(' ', 2)
+    parts = ctx.message.content.split('\s+', 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -207,11 +207,11 @@ async def encryptconfess(ctx):
         await personal_ads.send(f'**#{cnum}** replying to **{shorthash(pubkey)}**: {enc}')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
-        await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         
 @bot.command()
 async def identifyconfess(ctx):
-    parts = ctx.message.content.split(' ', 1)
+    parts = ctx.message.content.split('\s+', 1)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -230,11 +230,11 @@ async def identifyconfess(ctx):
         await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}**: {enc}')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Identification sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
-        await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
             
 @bot.command()
 async def decryptconfess(ctx):
-    parts = ctx.message.content.split(' ', 2)
+    parts = ctx.message.content.split('\s+', 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -250,13 +250,13 @@ async def decryptconfess(ctx):
         unenc = PKCS1_OAEP.new(key).decrypt(enc).decode('utf-8')
         await sendlogsleepdelete(ctx, None, None, 300, False, f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
-        await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
 
 
 @bot.command()
 async def verifyconfess(ctx):
-    parts = ctx.message.content.split(' ', 2)
+    parts = ctx.message.content.split('\s+', 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -274,12 +274,12 @@ async def verifyconfess(ctx):
         await personal_ads.send(f'**#{cnum}** verified as **{shorthash(pubkey)}**: {parts[2]}')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Verification as {shorthash(pubkey)} succeeded. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
-        await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
 
 @bot.command()
 async def deconfess(ctx):
-    parts = ctx.message.content.split(' ')
+    parts = ctx.message.content.split('\s+')
     partparts = [p.split(';;') for p in parts[1:]]
     partparttuples = [[(int(p.split(';')[0]), bytes.fromhex(p.split(';')[1])) for p in l] for l in partparts]
     tppt = [list(i) for i in zip(*partparttuples)]
