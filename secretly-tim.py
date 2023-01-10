@@ -95,7 +95,7 @@ def ginct(id: int):
 async def logconfess(num: int, confessor: discord.User, ctype: str):
     global mods
     salt = os.urandom(16).hex()
-    secret = f'{ctype} #{num} by {confessor.name}#{confessor.discriminator} ({confessor.id}) at {time.ctime()} (ignore: {salt})'
+    secret = f'{ctype} #{num} by {confessor.name}#{confessor.discriminator} ({confessor.id}) on {time.ctime()} (ignore: {salt})'
     secret = Padding.pad(secret.encode('utf-8'), 16)
     secret_chunks = [secret[i:i+16] for i in range(0, len(secret), 16)]
     split_chunks = [[str(k[0]) + ';' + k[1].hex() for k in Shamir.split(len(mods) // 2 + 1, len(mods), chunk)] for chunk in secret_chunks]
@@ -345,8 +345,9 @@ async def deleteverified(ctx):
         if not re.compile(f'^\*\*#\d+\*\*\sverified\sas\s\*\*{shorthash(pubkey)}').match(msg.content):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
             return
-        await msg.delete()
-        await sendlogsleepdelete(ctx, None, None, 30, False, 'Message deleted. This message will self-destruct in 30 seconds.')
+        new_content = msg.content.split(":")[0] + f" Confession deleted by `deleteverified` on {time.ctime()}."
+        await msg.edit()
+        await sendlogsleepdelete(ctx, None, None, 30, False, 'Confession content deleted. This message will self-destruct in 30 seconds.')
     except:
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Message not found in #personal-ads. This message will self-destruct in 30 seconds.')
         
