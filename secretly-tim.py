@@ -28,6 +28,7 @@ flags = {}
 start_time = time.ctime() 
 prev_msg = None
 personal_ads = None
+to_delete = {}
 
 mods = {}
 pubfolder = './pubkeys/'
@@ -104,15 +105,23 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
         await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
         i += 1
 
+async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
+    reply = await ctx.send(msg)
+    if logme:
+        await logconfess(cnum, ctx.author, type)
+    to_delete[reply.id] = reply
+    await asyncio.sleep(time)
+    await reply.delete()
+    del to_delete[reply.id]
+
 @bot.event
 async def on_ready():
     print(f'Connected on {start_time} with intents {bot.intents}.')
     for guild in bot.guilds:
         await on_guild_join(guild)
     global personal_ads
-    # personal_ads channel is 1060373558888505405
-    # my test is 1061053785633476618
-    personal_ads = bot.get_channel(1060373558888505405)
+    personal_ads = bot.get_channel(1060373558888505405) # personal_ads
+    # personal_ads = bot.get_channel(1061053785633476618) # test
         
 @bot.event
 async def on_guild_join(guild):
@@ -129,16 +138,18 @@ async def on_message(message):
     if message.author.id == 452902745066831903: #erez
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
-        if message.content.lower() == 'kill yourself':
+        if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
+            for m in to_delete.values():
+                await m.delete()
             await bot.close()
             print("committed suicide")
     await bot.process_commands(message)
 
-@bot.command()
-async def testconfess(ctx):
-    parts = ctx.message.content.split(' ', 1)
-    await ctx.send('I confess that I am a bot. You said: ' + parts[1])
+# @bot.command()
+# async def testconfess(ctx):
+#     parts = ctx.message.content.split(' ', 1)
+#     await ctx.send('I confess that I am a bot. You said: ' + parts[1])
     
 @bot.command()
 async def personalconfess(ctx):
@@ -149,17 +160,11 @@ async def personalconfess(ctx):
     #     return
     
     if len(parts) < 2:
-        reply = await ctx.send('You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
     
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]}')
-    reply = await ctx.send(f'Confession sent. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
-    await logconfess(cnum, ctx.author, parts[0])
-    await asyncio.sleep(300)
-    await reply.delete()
+    await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Confession sent. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
 
             
 
@@ -172,21 +177,14 @@ async def keyconfess(ctx):
         return
     
     if len(parts) < 2:
-        reply = await ctx.send('You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
     
     key = RSA.generate(1024)
     pubkey = hexit(key.n)
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
-    reply = await ctx.send(f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in **5 minutes**. **If you do not save your private key, you will not be able to decrypt replies.**')
-    await logconfess(cnum, ctx.author, parts[0])
-    await asyncio.sleep(300)
-    await reply.delete()
-
+    await sendlogsleepdelete(ctx, parts[0], cnum, 300, f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in **5 minutes**. **If you do not save your private key, you will not be able to decrypt replies.**')
 
 @bot.command()
 async def encryptconfess(ctx):
@@ -197,10 +195,7 @@ async def encryptconfess(ctx):
         return
     
     if len(parts) < 3:
-        reply = await ctx.send('You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
 
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
@@ -209,10 +204,7 @@ async def encryptconfess(ctx):
         enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** replying to **{shorthash(pubkey)}**: {enc}')
-        reply = await ctx.send(f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
-        await logconfess(cnum, ctx.author, parts[0])
-        await asyncio.sleep(300)
-        await reply.delete()
+        await sendlogsleepdelete(ctx, parts[0], cnum, 300, f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         
@@ -225,10 +217,7 @@ async def identifyconfess(ctx):
         return
     
     if len(parts) < 2:
-        reply = await ctx.send('You forgot to include a public key. Please try again with `identifyconfess PUBKEY_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a public key. Please try again with `identifyconfess PUBKEY_GOES_HERE`.')
 
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
@@ -238,10 +227,7 @@ async def identifyconfess(ctx):
         enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}**: {enc}')
-        reply = await ctx.send(f'Identification sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
-        await logconfess(cnum, ctx.author, parts[0])
-        await asyncio.sleep(300)
-        await reply.delete()
+        await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Identification sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
             
@@ -254,19 +240,14 @@ async def decryptconfess(ctx):
         return
     
     if len(parts) < 3:
-        reply = await ctx.send('You forgot to include content. Please try again with `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE`.')
     
     try:
         prikey = parts[1].split('_')
         key = RSA.construct((unhexit(prikey[1]) * unhexit(prikey[2]), 65537, unhexit(prikey[0]), unhexit(prikey[1]), unhexit(prikey[2])))
         enc = binascii.unhexlify(parts[2].encode('utf-8'))
         unenc = PKCS1_OAEP.new(key).decrypt(enc).decode('utf-8')
-        reply = await ctx.send(f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
-        await asyncio.sleep(300)
-        await reply.delete()
+        await sendlogsleepdelete(ctx, None, 300, False, f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
@@ -281,10 +262,7 @@ async def verifyconfess(ctx):
         return
     
     if len(parts) < 3:
-        reply = await ctx.send('You forgot to include content. Please try again with `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
-        await asyncio.sleep(300)
-        await reply.delete()
-        return
+        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
 
     print('here')
     try:
@@ -293,10 +271,7 @@ async def verifyconfess(ctx):
         pubkey = hexit(key.n)
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** verified as **{shorthash(pubkey)}**: {parts[2]}')
-        reply = await ctx.send(f'Verification as {shorthash(pubkey)} succeeded. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
-        await logconfess(cnum, ctx.author, parts[0])
-        await asyncio.sleep(300)
-        await reply.delete()
+        await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Verification as {shorthash(pubkey)} succeeded. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
