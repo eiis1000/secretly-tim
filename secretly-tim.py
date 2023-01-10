@@ -185,7 +185,7 @@ async def keyconfess(ctx):
     pubkey = hexit(key.n)
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
     cnum = ginct(personal_ads.id)
-    await personal_ads.send(f'**#{cnum}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
+    await personal_ads.send(f'**#{cnum}** as **{shorthash(pubkey)}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
     await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in **5 minutes**. **If you do not save your private key, you will not be able to decrypt replies.**')
 
 @bot.command()
@@ -342,7 +342,7 @@ async def deleteverified(ctx):
         prikey = parts[1].split('_')
         key = RSA.construct((unhexit(prikey[1]) * unhexit(prikey[2]), 65537, unhexit(prikey[0]), unhexit(prikey[1]), unhexit(prikey[2])))
         pubkey = hexit(key.n)
-        if not re.compile(f'^\*\*#\d+\*\*\sverified\sas\s\*\*{shorthash(pubkey)}').match(msg.content):
+        if not re.compile(f'^\*\*#\d+\*\*\s(verified\s)?as\s\*\*{shorthash(pubkey)}').match(msg.content):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
             return
         new_content = msg.content.split(":")[0] + f" Confession deleted via `deleteverified` on {time.ctime()}."
