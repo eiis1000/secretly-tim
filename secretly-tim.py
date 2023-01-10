@@ -280,7 +280,7 @@ async def verifyconfess(ctx):
 
 @bot.command()
 async def deconfess(ctx):
-    parts = ctx.message.content.split('\s+')
+    parts = re.split('\s+', ctx.message.content)
     partparts = [p.split(';;') for p in parts[1:]]
     partparttuples = [[(int(p.split(';')[0]), bytes.fromhex(p.split(';')[1])) for p in l] for l in partparts]
     tppt = [list(i) for i in zip(*partparttuples)]
@@ -291,6 +291,63 @@ async def deconfess(ctx):
         await ctx.send('Deconfessed:\n' + m)
     except:
         await ctx.send('Invalid UTF-8 string; you probably didn\'t use the right number of shares. Bytes: ' + m.hex())
+
+@bot.command()
+async def delete(ctx):
+    parts = re.split('\s+', ctx.message.content, 1)
+    if not isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send('Please use this command in a DM.')
+        await ctx.message.delete()
+        return
+    
+    if len(parts) < 2:
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a message ID. Please try again with `delete MESSAGE_ID_GOES_HERE`.')
+        return
+    
+    try:
+        msg = await ctx.fetch_message(int(parts[1]))
+        if (msg.channel != ctx.channel):
+            await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages sent in this DM. This message will self-destruct in 30 seconds.')
+            return
+        if (msg.author != bot.user):
+            await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages sent by this bot. This message will self-destruct in 30 seconds.')
+            return
+        await msg.delete()
+        await sendlogsleepdelete(ctx, None, None, 30, False, 'Message deleted. This message will self-destruct in 30 seconds.')
+    except:
+        await sendlogsleepdelete(ctx, None, None, 30, False, 'Message not found in this DM. This message will self-destruct in 30 seconds.')
+    
+@bot.command()
+async def deleteverified(ctx):
+    parts = re.split('\s+', ctx.message.content, 2)
+    if not isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send('Please use this command in a DM.')
+        await ctx.message.delete()
+        return
+    
+    if len(parts) < 3:
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `deleteconfess PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE`.')
+        return
+    
+    try:
+        msg = await personal_ads.fetch_message(int(parts[2]))
+        if (msg.author != bot.user):
+            await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages sent by this bot. This message will self-destruct in 30 seconds.')
+            return
+        prikey = parts[1].split('_')
+        key = RSA.construct((unhexit(prikey[1]) * unhexit(prikey[2]), 65537, unhexit(prikey[0]), unhexit(prikey[1]), unhexit(prikey[2])))
+        pubkey = hexit(key.n)
+        if not re.compile(f'^\*\*#\d+\*\*\sverified\sas\s\*\*{shorthash(pubkey)}').match(msg.content):
+            await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
+            return
+        await msg.delete()
+        await sendlogsleepdelete(ctx, None, None, 30, False, 'Message deleted. This message will self-destruct in 30 seconds.')
+    except:
+        await sendlogsleepdelete(ctx, None, None, 30, False, 'Message not found in #personal-ads. This message will self-destruct in 30 seconds.')
+        
+        
+
+
 
 bot.remove_command('help')
 @bot.command()
