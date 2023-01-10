@@ -345,7 +345,7 @@ async def deleteverified(ctx):
         if not re.compile(f'^\*\*#\d+\*\*\sverified\sas\s\*\*{shorthash(pubkey)}').match(msg.content):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
             return
-        new_content = msg.content.split(":")[0] + f" Confession deleted by `deleteverified` on {time.ctime()}."
+        new_content = msg.content.split(":")[0] + f" Confession deleted via `deleteverified` on {time.ctime()}."
         await msg.edit(content=new_content)
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Confession content deleted. This message will self-destruct in 30 seconds.')
     except:
