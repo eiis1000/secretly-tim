@@ -25,8 +25,8 @@ if len(sys.argv) > 1:
 with open(envfile, 'r') as f:
     TOKEN = f.read().split('=')[1][1:-1]
 
-# pan = 1060373558888505405 # personal ads
-pan = 1061053785633476618 # test
+pan = 1060373558888505405 # personal ads
+# pan = 1061053785633476618 # test
 flags = {}
 start_time = time.ctime() 
 prev_msg = None
