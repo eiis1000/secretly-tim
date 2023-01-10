@@ -13,6 +13,7 @@ import binascii
 import asyncio
 import base64
 import sys
+import re
 # from dotenv import load_dotenv
 
 # load_dotenv()
@@ -149,12 +150,12 @@ async def on_message(message):
 
 # @bot.command()
 # async def testconfess(ctx):
-#     parts = ctx.message.content.split('\s+', 1)
+#     parts = re.split('\s+', ctx.message.content, 1)
 #     await ctx.send('I confess that I am a bot. You said: ' + parts[1])
     
 @bot.command()
 async def personalconfess(ctx):
-    parts = ctx.message.content.split('\s+', 1)
+    parts = re.split('\s+', ctx.message.content, 1)
     # if not isinstance(ctx.channel, discord.DMChannel):
     #     await ctx.send('Please use this command in a DM.')
     #     await ctx.message.delete()
@@ -171,7 +172,7 @@ async def personalconfess(ctx):
 
 @bot.command()
 async def keyconfess(ctx):
-    parts = ctx.message.content.split('\s+', 1)
+    parts = re.split('\s+', ctx.message.content, 1)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -189,7 +190,7 @@ async def keyconfess(ctx):
 
 @bot.command()
 async def encryptconfess(ctx):
-    parts = ctx.message.content.split('\s+', 2)
+    parts = re.split('\s+', ctx.message.content, 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -211,7 +212,7 @@ async def encryptconfess(ctx):
         
 @bot.command()
 async def identifyconfess(ctx):
-    parts = ctx.message.content.split('\s+', 1)
+    parts = re.split('\s+', ctx.message.content, 1)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -234,7 +235,7 @@ async def identifyconfess(ctx):
             
 @bot.command()
 async def decryptconfess(ctx):
-    parts = ctx.message.content.split('\s+', 2)
+    parts = re.split('\s+', ctx.message.content, 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
@@ -256,7 +257,7 @@ async def decryptconfess(ctx):
 
 @bot.command()
 async def verifyconfess(ctx):
-    parts = ctx.message.content.split('\s+', 2)
+    parts = re.split('\s+', ctx.message.content, 2)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
