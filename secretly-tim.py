@@ -24,6 +24,8 @@ if len(sys.argv) > 1:
 with open(envfile, 'r') as f:
     TOKEN = f.read().split('=')[1][1:-1]
 
+pan = 1060373558888505405 # personal ads
+# pan = 1061053785633476618
 flags = {}
 start_time = time.ctime() 
 prev_msg = None
@@ -120,8 +122,7 @@ async def on_ready():
     for guild in bot.guilds:
         await on_guild_join(guild)
     global personal_ads
-    personal_ads = bot.get_channel(1060373558888505405) # personal_ads
-    # personal_ads = bot.get_channel(1061053785633476618) # test
+    personal_ads = bot.get_channel(pan) # personal_ads
         
 @bot.event
 async def on_guild_join(guild):
