@@ -161,7 +161,7 @@ async def personalconfess(ctx):
     #     return
     
     if len(parts) < 2:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
     
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]}')
@@ -178,7 +178,7 @@ async def keyconfess(ctx):
         return
     
     if len(parts) < 2:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
     
     key = RSA.generate(1024)
     pubkey = hexit(key.n)
@@ -196,7 +196,7 @@ async def encryptconfess(ctx):
         return
     
     if len(parts) < 3:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
 
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
@@ -218,7 +218,7 @@ async def identifyconfess(ctx):
         return
     
     if len(parts) < 2:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include a public key. Please try again with `identifyconfess PUBKEY_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a public key. Please try again with `identifyconfess PUBKEY_GOES_HERE`.')
 
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
@@ -241,14 +241,14 @@ async def decryptconfess(ctx):
         return
     
     if len(parts) < 3:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE`.')
     
     try:
         prikey = parts[1].split('_')
         key = RSA.construct((unhexit(prikey[1]) * unhexit(prikey[2]), 65537, unhexit(prikey[0]), unhexit(prikey[1]), unhexit(prikey[2])))
         enc = binascii.unhexlify(parts[2].encode('utf-8'))
         unenc = PKCS1_OAEP.new(key).decrypt(enc).decode('utf-8')
-        await sendlogsleepdelete(ctx, None, 300, False, f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
@@ -263,7 +263,7 @@ async def verifyconfess(ctx):
         return
     
     if len(parts) < 3:
-        await sendlogsleepdelete(ctx, None, 300, False, 'You forgot to include content. Please try again with `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
 
     print('here')
     try:
