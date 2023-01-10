@@ -96,6 +96,8 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
     global mods
     salt = os.urandom(16).hex()
     secret = f'{ctype} #{num} by {confessor.name}#{confessor.discriminator} ({confessor.id}) on {time.ctime()} (ignore: {salt})'
+    if num == 0:
+        secret = f'{confessor.name}#{confessor.discriminator} deleted: {ctype}'
     secret = Padding.pad(secret.encode('utf-8'), 16)
     secret_chunks = [secret[i:i+16] for i in range(0, len(secret), 16)]
     split_chunks = [[str(k[0]) + ';' + k[1].hex() for k in Shamir.split(len(mods) // 2 + 1, len(mods), chunk)] for chunk in secret_chunks]
@@ -105,7 +107,10 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
         cipher = PKCS1_OAEP.new(key)
         enc_data = cipher.encrypt(b';;'.join([secrets[i].encode('utf-8') for secrets in split_chunks]))
         mod = await bot.fetch_user(int(mod))
-        await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
+        if num == 0:
+            await mod.send(f'Confession encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
+        else:
+            await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
         i += 1
 
 async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
@@ -345,7 +350,12 @@ async def deleteverified(ctx):
         if not re.compile(f'^\*\*#\d+\*\*\sverified\sas\s\*\*{shorthash(pubkey)}').match(msg.content):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
             return
-        new_content = msg.content.split(":")[0] + f" Confession deleted via `deleteverified` on {time.ctime()}."
+        old_content = msg.content
+        new_content = msg.content.split(":")[0] + f": Confession deleted via `deleteverified` on {time.ctime()}."
+        try:
+            await logconfess(0, msg.author, f'{str(old_content)} | ')
+        except Exception as e:
+            await logconfess(0, msg.author, f'!!Failed to log deletion due to length; {str(old_content)[:10]}')
         await msg.edit(content=new_content)
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Confession content deleted. This message will self-destruct in 30 seconds.')
     except:
