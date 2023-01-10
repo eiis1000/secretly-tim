@@ -184,7 +184,7 @@ async def keyconfess(ctx):
     prikey = hexit(key.d) + '_' + hexit(key.p) + '_' + hexit(key.q)
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}**: {parts[1]} | keyhash = {shorthash(pubkey)}, pubkey = {pubkey}')
-    await sendlogsleepdelete(ctx, parts[0], cnum, 300, f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in **5 minutes**. **If you do not save your private key, you will not be able to decrypt replies.**')
+    await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Here is your private key:\n||{prikey}||\n**Make sure to save it somewhere safe and keep it secret!** For your own security, please delete your message. This message will self-destruct in **5 minutes**. **If you do not save your private key, you will not be able to decrypt replies.**')
 
 @bot.command()
 async def encryptconfess(ctx):
@@ -204,7 +204,7 @@ async def encryptconfess(ctx):
         enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** replying to **{shorthash(pubkey)}**: {enc}')
-        await sendlogsleepdelete(ctx, parts[0], cnum, 300, f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
+        await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await ctx.send(f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         
