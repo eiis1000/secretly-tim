@@ -346,7 +346,7 @@ async def deleteverified(ctx):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages verified as you. This message will self-destruct in 30 seconds.')
             return
         new_content = msg.content.split(":")[0] + f" Confession deleted by `deleteverified` on {time.ctime()}."
-        await msg.edit()
+        await msg.edit(content=new_content)
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Confession content deleted. This message will self-destruct in 30 seconds.')
     except:
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Message not found in #personal-ads. This message will self-destruct in 30 seconds.')
