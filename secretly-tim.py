@@ -330,7 +330,12 @@ async def deleteverified(ctx):
         return
     
     try:
-        msg = await personal_ads.fetch_message(int(parts[2]))
+        mid = None
+        if ('-' in parts[2]):
+            mid = int(parts[2].split('-')[1])
+        else:
+            mid = int(parts[2])
+        msg = await personal_ads.fetch_message(mid)
         if (msg.author != bot.user):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages sent by this bot. This message will self-destruct in 30 seconds.')
             return
@@ -358,6 +363,8 @@ async def help(ctx):
 `identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
 `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE` - Decrypt an encrypted confession
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
+`delete MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
+`deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
     ''')
 
 @bot.event
