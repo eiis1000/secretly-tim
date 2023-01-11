@@ -165,7 +165,7 @@ async def personalconfess(ctx):
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
     
     cnum = ginct(personal_ads.id)
-    await personal_ads.send(f'**#{cnum}**: {parts[1]}')
+    await personal_ads.send(f'**#{cnum}** unencrypted: {parts[1]}')
     await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Confession sent. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
 
             
