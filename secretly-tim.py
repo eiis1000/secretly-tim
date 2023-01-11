@@ -117,6 +117,12 @@ async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
     await reply.delete()
     del to_delete[reply.id]
 
+async def check_access(ctx):
+    if ctx.author.permissions_in(personal_ads).read_messages:
+        return True
+    await sendlogsleepdelete(ctx, None, None, 300, False, 'You do not have access to #personal-ads.')
+    return False
+
 @bot.event
 async def on_ready():
     print(f'Connected on {start_time} with intents {bot.intents}.')
@@ -177,6 +183,8 @@ async def keyconfess(ctx):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
         return
+    if not await check_access(ctx):
+        return
     
     if len(parts) < 2:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
@@ -194,6 +202,8 @@ async def encryptconfess(ctx):
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
+        return
+    if not await check_access(ctx):
         return
     
     if len(parts) < 3:
@@ -216,6 +226,8 @@ async def identifyconfess(ctx):
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
+        return
+    if not await check_access(ctx):
         return
     
     if len(parts) < 2:
@@ -261,6 +273,8 @@ async def verifyconfess(ctx):
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
         await ctx.message.delete()
+        return
+    if not await check_access(ctx):
         return
     
     if len(parts) < 3:
