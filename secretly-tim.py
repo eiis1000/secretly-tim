@@ -118,11 +118,15 @@ async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
     del to_delete[reply.id]
 
 async def check_access(ctx):
-    # if ctx.author.permissions_in(personal_ads).read_messages:
-    #     return True
-    # await sendlogsleepdelete(ctx, None, None, 300, False, 'You do not have access to #personal-ads.')
-    # return False
-    return True
+    try: 
+        if personal_ads.guild.get_member(ctx.author.id).permissions_in(personal_ads).read_messages:
+            return True
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You do not have access to #personal-ads.')
+        return False
+    except Exception as e:
+        print('error in check_access, allowing access anyways')
+        print(e)
+        return True
 
 @bot.event
 async def on_ready():
