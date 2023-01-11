@@ -358,7 +358,7 @@ async def deleteverified(ctx):
 bot.remove_command('help')
 @bot.command()
 async def help(ctx):
-    await ctx.send('''Commands (all commands are DM only):
+    help_str = '''Commands (all commands are DM only):
 `keyconfess CONFESSION_GOES_HERE` - Confess with a public key
 `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE` - Reply to a confession with an encrypted message
 `identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
@@ -366,7 +366,12 @@ async def help(ctx):
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
 `delete MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
 `deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
-    ''')
+    '''
+    if not isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(help_str)
+    else:
+        await sendlogsleepdelete(ctx, None, None, 300, False, help_str + '\nThis message will self-destruct in 5 minutes.')
+    
 
 @bot.event
 async def on_command_error(ctx, error):
