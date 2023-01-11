@@ -319,7 +319,12 @@ async def delete(ctx):
         return
     
     try:
-        msg = await ctx.fetch_message(int(parts[1]))
+        mid = None
+        if ('-' in parts[1]):
+            mid = int(parts[1].split('-')[1])
+        else:
+            mid = int(parts[1])
+        msg = await ctx.fetch_message(mid)
         if (msg.channel != ctx.channel):
             await sendlogsleepdelete(ctx, None, None, 30, False, 'You can only delete messages sent in this DM. This message will self-destruct in 30 seconds.')
             return
