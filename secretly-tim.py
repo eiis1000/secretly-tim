@@ -214,11 +214,17 @@ async def encryptconfess(ctx):
     if len(parts) < 3:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
 
+    if len(parts[2]) > 300:
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'Your reply is too long; it must be under 300 characters. Please try again with a shorter reply.')
+        return
+    
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
         pubkey = hexit(key.n)
-        unenc = parts[2].encode('utf-8')
-        enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
+        # print(parts[2].encode('utf-8'), len(parts[2].encode('utf-8')), 64 - len(parts[2].encode('utf-8'))%64)
+        secret = Padding.pad(parts[2].encode('utf-8'), 64)
+        secret_chunks = [secret[i:i+64] for i in range(0, len(secret), 64)]
+        enc = '_'.join([PKCS1_OAEP.new(key).encrypt(unenc).hex() for unenc in secret_chunks])
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** replying to **{shorthash(pubkey)}**: {enc}')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Confession sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
@@ -242,8 +248,9 @@ async def identifyconfess(ctx):
         key = RSA.construct((unhexit(parts[1]), 65537))
         pubkey = hexit(key.n)
         identistr = ctx.author.name + '#' + ctx.author.discriminator + ' has identified themselves! Send them a DM :)'
-        unenc = identistr.encode('utf-8')
-        enc = PKCS1_OAEP.new(key).encrypt(unenc).hex()
+        secret = Padding.pad(identistr.encode('utf-8'), 64)
+        secret_chunks = [secret[i:i+64] for i in range(0, len(secret), 64)]
+        enc = '_'.join([PKCS1_OAEP.new(key).encrypt(unenc).hex() for unenc in secret_chunks])
         cnum = ginct(personal_ads.id)
         await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}**: {enc}')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Identification sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
@@ -264,11 +271,12 @@ async def decryptconfess(ctx):
     try:
         prikey = parts[1].split('_')
         key = RSA.construct((unhexit(prikey[1]) * unhexit(prikey[2]), 65537, unhexit(prikey[0]), unhexit(prikey[1]), unhexit(prikey[2])))
-        enc = binascii.unhexlify(parts[2].encode('utf-8'))
-        unenc = PKCS1_OAEP.new(key).decrypt(enc).decode('utf-8')
+        enc_chunks = [bytes.fromhex(a) for a in parts[2].split('_')]
+        unenc_joined = b''.join([PKCS1_OAEP.new(key).decrypt(chunk) for chunk in enc_chunks])
+        unenc = Padding.unpad(unenc_joined, 64).decode('utf-8')
         await sendlogsleepdelete(ctx, None, None, 300, False, f'The decrypted confession is:\n{unenc}\nFor your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
-        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably the wrong key or not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
 
 
