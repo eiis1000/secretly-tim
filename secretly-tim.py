@@ -384,7 +384,24 @@ async def deleteverified(ctx):
         await sendlogsleepdelete(ctx, None, None, 30, False, 'Message not found in #personal-ads. This message will self-destruct in 30 seconds.')
         
         
-
+@bot.command()
+async def testkey(ctx):
+    parts = re.split('\s+', ctx.message.content, 1)
+    if not isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send('Please use this command in a DM.')
+        await ctx.message.delete()
+        return
+    
+    if len(parts) < 2:
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a key. Please try again with `testkey PRIKEY_GOES_HERE`.')
+        return
+    
+    try:
+        pubkey = parts[1].split('_')
+        key = RSA.construct((unhexit(pubkey[1]) * unhexit(pubkey[2]), 65537, unhexit(pubkey[0]), unhexit(pubkey[1]), unhexit(pubkey[2])))
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'Your private key corresponds to the public key with hash **{shorthash(hexit(key.n))}** and value ||{hexit(key.n)}||.')
+    except:
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'Key is invalid.')
 
 
 bot.remove_command('help')
@@ -398,6 +415,7 @@ async def help(ctx):
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
 `delete MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
 `deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
+`testkey PRIKEY_GOES_HERE` - Test a private key to see which pubic key it corresponds to
     '''
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send(help_str)
