@@ -257,6 +257,11 @@ async def identifyconfess(ctx):
     except:
         await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
             
+
+@bot.command()
+async def identityconfess(ctx):
+    await sendlogsleepdelete(ctx, None, None, 300, False, 'The correct command is identi**f**yconfess. Try that :)')
+
 @bot.command()
 async def decryptconfess(ctx):
     parts = re.split('\s+', ctx.message.content, 2)
