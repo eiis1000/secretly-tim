@@ -21,8 +21,8 @@ import re
 TOKEN = None
 tokenfile = '.token'
 if len(sys.argv) > 1:
-    token = sys.argv[1] + '.token'
-with open(token, 'r') as f:
+    tokenfile = sys.argv[1] + '.token'
+with open(tokenfile, 'r') as f:
     TOKEN = f.read().strip()
 
 pan = 1060373558888505405 # personal ads
