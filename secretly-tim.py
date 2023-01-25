@@ -19,11 +19,11 @@ import re
 # load_dotenv()
 # TOKEN = os.getenv('DISCORD_TOKEN')
 TOKEN = None
-envfile = '.env'
+tokenfile = '.token'
 if len(sys.argv) > 1:
-    envfile = sys.argv[1] + '.env'
-with open(envfile, 'r') as f:
-    TOKEN = f.read().split('=')[1][1:-1]
+    token = sys.argv[1] + '.token'
+with open(token, 'r') as f:
+    TOKEN = f.read().strip()
 
 pan = 1060373558888505405 # personal ads
 # pan = 1061053785633476618 # test
