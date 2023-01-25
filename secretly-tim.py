@@ -151,6 +151,8 @@ async def on_message(message):
     if message.author.id == 452902745066831903: #erez
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
+        if message.content.lower() == 'version':
+            await message.channel.send('1.1.0')
         if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             for m in to_delete.values():
