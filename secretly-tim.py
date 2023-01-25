@@ -152,14 +152,14 @@ async def on_message(message):
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
         if message.content.lower() == 'version':
-            await message.channel.send('1.1.2')
+            await message.channel.send('1.1.3')
         if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             for m in to_delete.values():
                 await m.delete()
             await bot.close()
             print("committed suicide")
-            exit(0)
+            # exit(0)
     await bot.process_commands(message)
 
 # @bot.command()
