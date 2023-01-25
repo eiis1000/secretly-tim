@@ -159,6 +159,7 @@ async def on_message(message):
                 await m.delete()
             await bot.close()
             print("committed suicide")
+            exit(0)
     await bot.process_commands(message)
 
 # @bot.command()
