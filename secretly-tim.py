@@ -14,6 +14,7 @@ import asyncio
 import base64
 import sys
 import re
+import traceback
 # from dotenv import load_dotenv
 
 # load_dotenv()
@@ -109,13 +110,20 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
         i += 1
 
 async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
-    reply = await ctx.send(msg)
-    if logme:
-        await logconfess(cnum, ctx.author, type)
-    to_delete[reply.id] = reply
-    await asyncio.sleep(time)
-    await reply.delete()
-    del to_delete[reply.id]
+    try:
+        reply = await ctx.send(msg)
+        if logme:
+            await logconfess(cnum, ctx.author, type)
+        to_delete[reply.id] = reply
+        await asyncio.sleep(time)
+        await reply.delete()
+        del to_delete[reply.id]
+    except Exception as e:
+        print('error in sendlogsleepdelete')
+        print(e)
+        sendlogsleepdelete(ctx, None, None, 300, False, 'Error in send-encryptlog-sleep-delete routine. Please report to the bot owner before this message deletes itself in 5 minutes.')
+        print(traceback.format_exc())
+        sendlogsleepdelete(ctx, None, None, 300, False, f'Attempting to attach traceback: \\{traceback.format_exc()[0:600]}\\...\\{traceback.format_exc()[-600:]}\\')
 
 async def check_access(ctx):
     try: 
