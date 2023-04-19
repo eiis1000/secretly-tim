@@ -433,7 +433,7 @@ async def help(ctx):
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
 `delete MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
 `deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
-`testkey PRIKEY_GOES_HERE` - Test a private key to see which pubic key it corresponds to
+`testkey PRIKEY_GOES_HERE` - Test a private key to see which public key it corresponds to
     '''
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send(help_str)
