@@ -436,7 +436,7 @@ async def help(ctx):
 `testkey PRIKEY_GOES_HERE` - Test a private key to see which public key it corresponds to
     '''
     if not isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(help_str)
+        await ctx.send('Please use this command in a DM.')
     else:
         await sendlogsleepdelete(ctx, None, None, 300, False, help_str + '\nThis message will self-destruct in 5 minutes.')
     
