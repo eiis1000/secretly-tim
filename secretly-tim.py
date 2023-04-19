@@ -159,8 +159,8 @@ async def on_message(message):
     if message.author.id == 452902745066831903: #erez
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
-        if message.content.lower() == 'version':
-            await message.channel.send('1.1.7')
+        if message.content.lower() == 'version' or message.content.lower() == 'pbv':
+            await message.channel.send('1.1.8')
         if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             try:
