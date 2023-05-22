@@ -160,7 +160,7 @@ async def on_message(message):
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
         if message.content.lower() == 'version' or message.content.lower() == 'pbv':
-            await message.channel.send('1.1.10')
+            await message.channel.send('1.1.11')
         if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             try:
@@ -297,6 +297,9 @@ async def decryptconfess(ctx):
         await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably the wrong key or not a valid private key. Please try again with `decryptconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
         return
 
+@bot.command()
+async def decrypt(ctx):
+    await decryptconfess(ctx)
 
 @bot.command()
 async def verifyconfess(ctx):
@@ -338,7 +341,7 @@ async def deconfess(ctx):
         await ctx.send('Invalid UTF-8 string; you probably didn\'t use the right number of shares. Bytes: ' + m.hex())
 
 @bot.command()
-async def delete(ctx):
+async def deletedm(ctx):
     parts = re.split('\s+', ctx.message.content, 1)
     if not isinstance(ctx.channel, discord.DMChannel):
         await ctx.send('Please use this command in a DM.')
@@ -431,7 +434,7 @@ async def help(ctx):
 `identifyconfess PUBKEY_GOES_HERE` - Identify yourself in an encrypted confession
 `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE` - Decrypt an encrypted confession
 `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE` - Confess while verifying that you are the same person
-`delete MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
+`deletedm MESSAGE_ID_GOES_HERE` - Delete a message sent by this bot in DMs
 `deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
 `testkey PRIKEY_GOES_HERE` - Test a private key to see which public key it corresponds to
     '''
