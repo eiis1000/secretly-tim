@@ -106,7 +106,7 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
         cipher = PKCS1_OAEP.new(key)
         enc_data = cipher.encrypt(b';;'.join([secrets[i].encode('utf-8') for secrets in split_chunks]))
         mod = await bot.fetch_user(int(mod))
-        await mod.send(f'Identity of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
+        await mod.send(f'Identity fragment of {ctype} #{num} encrypted with {mod.name}\'s public key:\n||{base64.b64encode(enc_data).decode("utf-8")}||')
         i += 1
 
 async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
