@@ -160,7 +160,7 @@ async def on_message(message):
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
         if message.content.lower() == 'version' or message.content.lower() == 'pbv':
-            await message.channel.send('1.1.11')
+            await message.channel.send('1.1.12')
         if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             try:
@@ -265,7 +265,7 @@ async def identifyconfess(ctx):
         secret_chunks = [secret[i:i+64] for i in range(0, len(secret), 64)]
         enc = '_'.join([PKCS1_OAEP.new(key).encrypt(unenc).hex() for unenc in secret_chunks])
         cnum = ginct(personal_ads.id)
-        await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}**: {enc}')
+        await personal_ads.send(f'**#{cnum}** identifying to **{shorthash(pubkey)}** encrypted: ||{enc}||')
         await sendlogsleepdelete(ctx, parts[0], cnum, 300, True, f'Identification sent for {shorthash(pubkey)}. For your own security, please delete your message. This message will self-destruct in 5 minutes.')
     except:
         await sendlogsleepdelete(ctx, None, None, 300, False, f'There was an error, so \'{parts[1]}\' is probably not a valid public key. Please try again with `encryptconfess PUBKEY_GOES_HERE CONFESSION_GOES_HERE`.')
