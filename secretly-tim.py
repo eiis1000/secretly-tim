@@ -1,4 +1,4 @@
-# bot.py
+no# bot.py
 import os
 
 import discord
@@ -111,7 +111,7 @@ async def logconfess(num: int, confessor: discord.User, ctype: str):
 
 async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
     try:
-        reply = await ctx.send(msg)
+        reply = await ctx.send(msg.replace('@','')
         if logme:
             await logconfess(cnum, ctx.author, type)
         to_delete[reply.id] = reply
