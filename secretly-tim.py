@@ -1,4 +1,4 @@
-no# bot.py
+# bot.py
 import os
 
 import discord
