@@ -160,8 +160,8 @@ async def on_message(message):
         if 'my son' in message.content.lower():
             await message.channel.send('yes father')
         if message.content.lower() == 'version' or message.content.lower() == 'pbv':
-            await message.channel.send('1.1.12')
-        if message.content.lower() == 'kill yourself' or message.content.lower() == 'kys':
+            await message.channel.send('1.1.13')
+        if message.content.lower() == 'reboot' or message.content.lower() == 'kys':
             await message.channel.send('okay :(')
             try:
                 for m in to_delete.values():
