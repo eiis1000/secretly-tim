@@ -438,9 +438,9 @@ async def help(ctx):
 `deleteverified PRIKEY_GOES_HERE MESSAGE_ID_GOES_HERE` - Delete a verified message sent by this bot in #personal-ads
 `testkey PRIKEY_GOES_HERE` - Test a private key to see which public key it corresponds to
     '''
-    if ctx.channel.id == pan:#not isinstance(ctx.channel, discord.DMChannel):
+    if ctx.channel.id == pan:
         await ctx.send('Please use this command in a DM.')
-    else:
+    elif isinstance(ctx.channel, discord.DMChannel):
         await sendlogsleepdelete(ctx, None, None, 300, False, help_str + '\nThis message will self-destruct in 5 minutes.')
     
 
