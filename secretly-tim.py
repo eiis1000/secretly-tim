@@ -121,9 +121,9 @@ async def sendlogsleepdelete(ctx, type, cnum, time, logme, msg):
     except Exception as e:
         print('error in sendlogsleepdelete')
         print(e)
-        sendlogsleepdelete(ctx, None, None, 300, False, 'Error in send-encryptlog-sleep-delete routine. Please report to the bot owner before this message deletes itself in 5 minutes.')
+        await sendlogsleepdelete(ctx, None, None, 300, False, 'Error in send-encryptlog-sleep-delete routine. Please report to the bot owner before this message deletes itself in 5 minutes.')
         print(traceback.format_exc())
-        sendlogsleepdelete(ctx, None, None, 300, False, f'Attempting to attach traceback: \\{traceback.format_exc()[0:600]}\\...\\{traceback.format_exc()[-600:]}\\')
+        await sendlogsleepdelete(ctx, None, None, 300, False, f'Attempting to attach traceback: \\{traceback.format_exc()[0:600]}\\...\\{traceback.format_exc()[-600:]}\\')
 
 async def check_access(ctx):
     try: 
@@ -187,6 +187,7 @@ async def personalconfess(ctx):
     
     if len(parts) < 2:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `personalconfess CONFESSION_GOES_HERE`.')
+        return
     
     cnum = ginct(personal_ads.id)
     await personal_ads.send(f'**#{cnum}** unencrypted: {parts[1]}')
@@ -206,6 +207,7 @@ async def keyconfess(ctx):
     
     if len(parts) < 2:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a confession. Please try again with `keyconfess CONFESSION_GOES_HERE`.')
+        return
     
     key = RSA.generate(1024)
     pubkey = hexit(key.n)
@@ -226,6 +228,7 @@ async def encryptconfess(ctx):
     
     if len(parts) < 3:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `encryptconfess PUBKEY_GOES_HERE REPLY_GOES_HERE`.')
+        return
 
     if len(parts[2]) > 300:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'Your reply is too long; it must be under 300 characters. Please try again with a shorter reply.')
@@ -256,6 +259,7 @@ async def identifyconfess(ctx):
     
     if len(parts) < 2:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include a public key. Please try again with `identifyconfess PUBKEY_GOES_HERE`.')
+        return
 
     try:
         key = RSA.construct((unhexit(parts[1]), 65537))
@@ -285,6 +289,7 @@ async def decryptconfess(ctx):
     
     if len(parts) < 3:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `decryptconfess PRIKEY_GOES_HERE ENCRYPTED_REPLY_GOES_HERE`.')
+        return
     
     try:
         prikey = parts[1].split('_')
@@ -313,6 +318,7 @@ async def verifyconfess(ctx):
     
     if len(parts) < 3:
         await sendlogsleepdelete(ctx, None, None, 300, False, 'You forgot to include content. Please try again with `verifyconfess PRIKEY_GOES_HERE CONFESSION_GOES_HERE`.')
+        return
 
     print('here')
     try:
